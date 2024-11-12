@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coração Interativo</title>
+    <style>
+        /* Estilos globais */
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #1a1a2e;
+            overflow: hidden;
+            font-family: Arial, sans-serif;
+        }
+
+        /* Estilo do coração */
+        .heart {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(145deg, #ff4e50, #ff1e56);
+            position: relative;
+            transform: rotate(-45deg);
+            animation: heartbeat 1s infinite;
+            box-shadow: 0px 0px 20px rgba(255, 92, 87, 0.8);
+            cursor: pointer;
+        }
+
+        .heart::before,
+        .heart::after {
+            content: "";
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: inherit;
+            position: absolute;
+        }
+
+        .heart::before {
+            top: -50px;
+            left: 0;
+        }
+
+        .heart::after {
+            left: 50px;
+            top: 0;
+        }
+
+        /* Efeito de batimento */
+        @keyframes heartbeat {
+            0%, 100% {
+                transform: scale(1) rotate(-45deg);
+            }
+            50% {
+                transform: scale(1.1) rotate(-45deg);
+                box-shadow: 0px 0px 30px rgba(255, 92, 87, 1);
+            }
+        }
+
+        /* Estilo das abas */
+        .tabs {
+            position: absolute;
+            top: 0;
+            right: -120px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            transition: right 0.3s ease;
+        }
+
+        .tab {
+            width: 100px;
+            padding: 10px;
+            background-color: #ff1e56;
+            color: white;
+            text-align: center;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .tab:hover {
+            background-color: #ff4e50;
+        }
+
+        /* Painel de conteúdo */
+        .content-panel {
+            position: absolute;
+            top: 0;
+            right: -300px;
+            width: 200px;
+            padding: 20px;
+            background-color: #333;
+            color: white;
+            border-radius: 10px;
+            transition: right 0.3s ease;
+            display: none;
+        }
+
+        /* Player de música */
+        .music-player {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+            max-width: 450px;
+            background-color: #222;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.5);
+        }
+
+        .music-info {
+            flex: 1;
+            text-align: left;
+        }
+
+        .music-controls button {
+            background: none;
+            border: none;
+            color: #ff4e50;
+            font-size: 24px;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .music-controls button:hover {
+            color: #ff1e56;
+        }
+
+        /* Botão de seleção de música */
+        .music-select {
+            background-color: #ff4e50;
+            border: none;
+            color: white;
+            border-radius: 5px;
+            padding: 5px 10px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s;
+        }
+
+        .music-select:hover {
+            background-color: #ff1e56;
+        }
+
+        /* Estilo para as imagens na galeria */
+        .photo-gallery img {
+            width: 100px;
+            height: auto;
+            margin: 5px;
+            border-radius: 5px;
+            object-fit: cover;
+            cursor: pointer;
+        }
+
+        /* Estilo para a sobreposição */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .overlay img {
+            max-width: 90%;
+            max-height: 90%;
+            border-radius: 10px;
+            box-shadow: 0px 0px 20px rgba(255, 92, 87, 1);
+        }
+
+        .overlay .close-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background-color: transparent;
+            border: none;
+            color: white;
+            font-size: 30px;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .overlay .close-btn:hover {
+            color: #ff4e50;
+        }
+
+        /* Mostrar as abas e o painel */
+        .show-tabs .tabs {
+            right: 120px;
+        }
+
+        .show-panel .content-panel {
+            right: 20px;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="heart" onclick="toggleTabs(); createHeartEffect();"></div>
+
+    <!-- Abas -->
+    <div class="tabs">
+        <div class="tab" onclick="showContent('photos')">Fotos</div>
+        <div class="tab" onclick="showContent('messages')">Mensagens</div>
+    </div>
+
+    <!-- Painel de conteúdo -->
+    <div class="content-panel" id="content-panel">
+        <div id="photos-content" class="photo-gallery" style="display: none;">
+            <img src="c:\Users\rafae_7ri9v89\Desktop\xavier\meus projetos\coração\imagem 1.jpeg" alt="Foto 1" onclick="openImage(this.src)">
+            <img src="c:\Users\rafae_7ri9v89\Desktop\xavier\meus projetos\coração\imagem 3.jpeg" alt="Foto 2" onclick="openImage(this.src)">
+            <img src="c:\Users\rafae_7ri9v89\Desktop\xavier\meus projetos\coração\imagem 4.jpeg" alt="Foto 3" onclick="openImage(this.src)">
+        </div>
+        <div id="messages-content" class="messages" style="display: none;">
+            <p>Mensagem 1:O amor é paciente, é bondoso. O amor não inveja, não se vangloria, não se orgulha." 1 Coríntios 13:4.</p>
+            <p>Mensagem 2: Sobretudo, amem-se sinceramente uns aos outros, porque o amor perdoa muitíssimos pecados." 1 Pedro 4:8.</p>
+            <p>Mensagem 3: A vida é uma jornada,eu vou adorar querer fazer essa jornada ao seu lado .</p>
+            <p>Mensagem 4: Ame intensamente, nas dores e nos sorrisos da vida.</p>
+            <p>Mensagem 5: Amar-te-ei sempre, entre as sombras e os sorrisos da vida.</p>
+        </div>
+    </div>
+
+    <!-- Sobreposição para a imagem expandida -->
+    <div class="overlay" id="overlay">
+        <button class="close-btn" onclick="closeOverlay()">×</button>
+        <img id="overlay-image" src="" alt="Imagem Expandida">
+    </div>
+
+    <!-- Player de música -->
+    <div class="music-player">
+        <audio id="audio-player" src="audios/Matheus & Kauan - Ser Humano Ou Anjo.mp3"></audio>
+        <div class="music-info">Tocando: Ser Humano ou Anjo</div>
+        <div class="music-controls">
+            <button onclick="previousSong()">⏮️</button>
+            <button onclick="togglePlayPause()">⏯️</button>
+            <button onclick="nextSong()">⏭️</button>
+        </div>
+    </div>
+
+    <script>
+        let isTabsVisible = false;
+        let currentContent = null;
+        let audioPlayer = document.getElementById('audio-player');
+        let isPlaying = false;
+        let songs = [
+            "audios/Matheus & Kauan - Ser Humano Ou Anjo.mp3",
+            "audios/Outra Musica.mp3" // Adicione mais músicas aqui
+        ];
+        let currentSongIndex = 0;
+
+        function toggleTabs() {
+            document.body.classList.toggle('show-tabs');
+            isTabsVisible = !isTabsVisible;
+
+            if (!isTabsVisible) {
+                document.body.classList.remove('show-panel');
+            }
+        }
+
+        function showContent(contentType) {
+            if (currentContent) {
+                document.getElementById(currentContent).style.display = 'none';
+            }
+
+            currentContent = contentType + '-content';
+            document.getElementById(currentContent).style.display = 'block';
+            document.body.classList.add('show-panel');
+        }
+
+        function togglePlayPause() {
+            if (isPlaying) {
+                audioPlayer.pause();
+            } else {
+                audioPlayer.play();
+            }
+            isPlaying = !isPlaying;
+        }
+
+        function previousSong() {
+            currentSongIndex = (currentSongIndex - 1 + songs.length) % songs.length;
+            audioPlayer.src = songs[currentSongIndex];
+            audioPlayer.play();
+            isPlaying = true;
+        }
+
+        function nextSong() {
+            currentSongIndex = (currentSongIndex + 1) % songs.length;
+            audioPlayer.src = songs[currentSongIndex];
+            audioPlayer.play();
+            isPlaying = true;
+        }
+
+        // Função para abrir a imagem em uma sobreposição
+        function openImage(src) {
+            const overlay = document.getElementById('overlay');
+            const overlayImage = document.getElementById('overlay-image');
+            overlay.style.display = 'flex';  
+            overlayImage.src = src;  
+        }
+
+        function closeOverlay() {
+            const overlay = document.getElementById('overlay');
+            overlay.style.display = 'none';  
+        }
+    </script>
+</body>
+</html>
